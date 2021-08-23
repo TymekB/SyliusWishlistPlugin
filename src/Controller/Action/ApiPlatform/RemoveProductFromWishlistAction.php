@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BitBag\SyliusWishlistPlugin\Controller\Action\ApiPlatform;
 
 use BitBag\SyliusWishlistPlugin\Command\Wishlist\RemoveProductFromWishlist;
+use BitBag\SyliusWishlistPlugin\Resolver\WishlistTokenResolver;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,15 +15,20 @@ final class RemoveProductFromWishlistAction
 {
     private MessageBusInterface $messageBus;
 
-    public function __construct(MessageBusInterface $messageBus)
+    private WishlistTokenResolver $wishlistTokenResolver;
+
+    public function __construct(MessageBusInterface $messageBus, WishlistTokenResolver $wishlistTokenResolver)
     {
         $this->messageBus = $messageBus;
+        $this->wishlistTokenResolver = $wishlistTokenResolver;
     }
 
     public function __invoke(Request $request): JsonResponse
     {
-        $wishlistToken = (string) $request->attributes->get('token');
-        $productId = (int) $request->attributes->get('productId');
+        $wishlistIdentifier = $this->wishlistTokenResolver->resolveToken();
+
+        $wishlistToken = (string)$request->attributes->get($wishlistIdentifier);
+        $productId = (int)$request->attributes->get('productId');
 
         $removeProductFromWishlist = new RemoveProductFromWishlist($productId, $wishlistToken);
         $this->messageBus->dispatch($removeProductFromWishlist);

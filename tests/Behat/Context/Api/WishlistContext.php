@@ -8,6 +8,7 @@ use Behat\Behat\Context\Context;
 use Behat\MinkExtension\Context\MinkContext;
 use BitBag\SyliusWishlistPlugin\Entity\WishlistInterface;
 use BitBag\SyliusWishlistPlugin\Repository\WishlistRepositoryInterface;
+use BitBag\SyliusWishlistPlugin\Resolver\WishlistTokenResolver;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
@@ -33,9 +34,13 @@ final class WishlistContext extends MinkContext implements Context
 
     private RouterInterface $router;
 
+    private WishlistTokenResolver $wishlistTokenResolver;
+
     private ?ShopUserInterface $user;
 
     private ?string $token;
+
+    private string $tokenIdentifier;
 
     private const PATCH = 'PATCH';
 
@@ -47,12 +52,14 @@ final class WishlistContext extends MinkContext implements Context
         WishlistRepositoryInterface $wishlistRepository,
         UserRepositoryInterface $userRepository,
         ClientInterface $client,
-        RouterInterface $router
+        RouterInterface $router,
+        WishlistTokenResolver $wishlistTokenResolver
     ) {
         $this->client = $client;
         $this->wishlistRepository = $wishlistRepository;
         $this->userRepository = $userRepository;
         $this->router = $router;
+        $this->tokenIdentifier = $wishlistTokenResolver->resolveToken();
     }
 
     /**
@@ -82,6 +89,7 @@ final class WishlistContext extends MinkContext implements Context
                 'body' => json_encode($body),
             ]
         );
+
         Assert::eq($response->getStatusCode(), 200);
 
         $json = json_decode((string) $response->getBody());
@@ -196,7 +204,7 @@ final class WishlistContext extends MinkContext implements Context
     public function userRemovesProductFromTheWishlist(ProductInterface $product): void
     {
         $uri = $this->router->generate('api_wishlists_shop_remove_product_from_wishlist_item', [
-            'token' => $this->wishlist->getToken(),
+            $this->tokenIdentifier => $this->wishlist->getToken(),
             'productId' => $product->getId(),
         ]);
 
@@ -237,7 +245,7 @@ final class WishlistContext extends MinkContext implements Context
     public function userRemovesProductVariantFromTheWishlist(ProductVariantInterface $variant): void
     {
         $uri = $this->router->generate('api_wishlists_shop_remove_product_variant_from_wishlist_item', [
-            'token' => $this->wishlist->getToken(),
+            $this->tokenIdentifier => $this->wishlist->getToken(),
             'productVariantId' => $variant->getId(),
         ]);
 
@@ -324,7 +332,7 @@ final class WishlistContext extends MinkContext implements Context
     private function addProductToTheWishlist(WishlistInterface $wishlist, ProductInterface $product): ResponseInterface
     {
         $uri = $this->router->generate('api_wishlists_shop_add_product_to_wishlist_item', [
-            'token' => $wishlist->getToken(),
+            $this->tokenIdentifier => $wishlist->getToken(),
         ]);
 
         $body = [
@@ -341,7 +349,7 @@ final class WishlistContext extends MinkContext implements Context
     private function addProductVariantToTheWishlist(WishlistInterface $wishlist, ProductVariantInterface $variant): ResponseInterface
     {
         $uri = $this->router->generate('api_wishlists_shop_add_product_variant_to_wishlist_item', [
-            'token' => $wishlist->getToken(),
+            $this->tokenIdentifier => $wishlist->getToken(),
         ]);
 
         $body = [
@@ -361,7 +369,7 @@ final class WishlistContext extends MinkContext implements Context
     private function removeProductFromTheWishlist(WishlistInterface $wishlist, ProductInterface $product): ResponseInterface
     {
         $uri = $this->router->generate('api_wishlists_shop_remove_product_from_wishlist_item', [
-            'token' => $wishlist->getToken(),
+            $this->tokenIdentifier => $wishlist->getToken(),
             'productId' => $product->getId(),
         ]);
 
