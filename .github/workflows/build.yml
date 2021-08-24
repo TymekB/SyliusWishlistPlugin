@@ -166,10 +166,10 @@ jobs:
       -
         name: Generate JWT keypair
         run: (cd tests/Application && bin/console lexik:jwt:generate-keypair --overwrite)
-
-      -
-        name: Run PHPStan
-        run: vendor/bin/phpstan analyse -c phpstan.neon -l 7 src/
+#
+#      -
+#        name: Run PHPStan
+#        run: vendor/bin/phpstan analyse -c phpstan.neon -l 7 src/
 
       -
         name: Run PHPSpec
