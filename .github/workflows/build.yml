@@ -23,7 +23,7 @@ jobs:
       matrix:
         php: [7.4, 7.3, 8.0]
         symfony: [^4.4, ^5.2]
-        sylius: [~1.8.0, ~1.9.0, ~1.10.0]
+        sylius: [~1.9.0, ~1.10.0]
         node: [10.x]
         mysql: [5.7]
 
@@ -32,17 +32,15 @@ jobs:
             php: 7.3
             mysql: 8.0
           -
-            sylius: ~1.8.0
-            symfony: ^5.2
-          -
-            sylius: ~1.8.0
-            php: 8.0
-          -
             sylius: ~1.9.0
             php: 8.0
           -
+            sylius: ~1.9.0
+            php: 7.3
+          -
             sylius: ~1.10.0
             php: 7.3
+
 
     env:
       APP_ENV: test
@@ -167,7 +165,7 @@ jobs:
 
       -
         name: Generate JWT keypair
-        run: (cd tests/Application && bin/console lexik:jwt:generate-keypair)
+        run: (cd tests/Application && bin/console lexik:jwt:generate-keypair --overwrite)
 
       -
         name: Run PHPStan
