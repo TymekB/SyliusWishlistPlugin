@@ -4,10 +4,3 @@ services:
         arguments:
             - "@bitbag_sylius_wishlist_plugin.repository.wishlist"
             - "@bitbag_sylius_wishlist_plugin.custom_factory.wishlist"
-
-    bitbag_sylius_wishlist_plugin.resolver.wishlist_token_resolver:
-        class: BitBag\SyliusWishlistPlugin\Resolver\WishlistTokenResolver
-        arguments:
-            - "@pretty_versions"
-    pretty_versions:
-        class: Jean85\PrettyVersions

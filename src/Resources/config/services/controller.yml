@@ -3,7 +3,6 @@ services:
         class: BitBag\SyliusWishlistPlugin\Controller\Action\ApiPlatform\RemoveProductFromWishlistAction
         arguments:
             - "@api_platform.message_bus"
-            - "@bitbag_sylius_wishlist_plugin.resolver.wishlist_token_resolver"
         tags:
             - { name: controller.service_arguments }
 
@@ -11,7 +10,6 @@ services:
         class: BitBag\SyliusWishlistPlugin\Controller\Action\ApiPlatform\RemoveProductVariantFromWishlistAction
         arguments:
             - "@api_platform.message_bus"
-            - "@bitbag_sylius_wishlist_plugin.resolver.wishlist_token_resolver"
         tags:
             - { name: controller.service_arguments }
 

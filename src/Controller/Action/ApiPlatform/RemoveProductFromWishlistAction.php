@@ -15,19 +15,14 @@ final class RemoveProductFromWishlistAction
 {
     private MessageBusInterface $messageBus;
 
-    private WishlistTokenResolver $wishlistTokenResolver;
-
-    public function __construct(MessageBusInterface $messageBus, WishlistTokenResolver $wishlistTokenResolver)
+    public function __construct(MessageBusInterface $messageBus)
     {
         $this->messageBus = $messageBus;
-        $this->wishlistTokenResolver = $wishlistTokenResolver;
     }
 
     public function __invoke(Request $request): JsonResponse
     {
-        $wishlistIdentifier = $this->wishlistTokenResolver->resolveToken();
-
-        $wishlistToken = (string)$request->attributes->get($wishlistIdentifier);
+        $wishlistToken = (string)$request->attributes->get('token');
         $productId = (int)$request->attributes->get('productId');
 
         $removeProductFromWishlist = new RemoveProductFromWishlist($productId, $wishlistToken);
