@@ -22,7 +22,6 @@ jobs:
    matrix:
     php: [ 7.4, 8.0 ]
     symfony: [ ^4.4, ^5.2 ]
-    sylius: [ ~1.9 ]
     node: [ 10.x ]
     mysql: [ 5.7 ]
 
@@ -98,8 +97,8 @@ jobs:
       composer config extra.symfony.require "${{ matrix.symfony }}"
 
    - name: Restrict Sylius version
-     if: matrix.sylius != ''
-     run: composer require "sylius/sylius:${{ matrix.sylius }}" --no-update --no-scripts --no-interaction
+#     if: matrix.sylius != ''
+     run: composer require "sylius/sylius:~1.9.0" --no-update --no-scripts --no-interaction
 
    - name: Install PHP dependencies
      run: composer install --no-interaction
