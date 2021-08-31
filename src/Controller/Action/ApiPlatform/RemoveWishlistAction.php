@@ -27,7 +27,7 @@ final class RemoveWishlistAction
 
     public function __invoke(Request $request): JsonResponse
     {
-        $wishlistToken = (string) $request->attributes->get('token');
+        $wishlistToken = (string) $request->attributes->get('id');
 
         $removeWishlist = new RemoveWishlist($wishlistToken);
         $this->messageBus->dispatch($removeWishlist);
